@@ -18,6 +18,9 @@ def _d(d: dt.datetime) -> str:
 
 
 def _end_of_hold(fx: Fixture) -> dt.datetime:
+    if fx.extra.get("hold_until"):
+        # Adapter-set span, e.g. a finals-weekend placeholder held Fri–Sun.
+        return dt.datetime.fromisoformat(fx.extra["hold_until"])
     if fx.all_day:
         # Time unknown: hold for the whole local day rather than guess.
         local = fx.kickoff_utc.astimezone(LONDON)

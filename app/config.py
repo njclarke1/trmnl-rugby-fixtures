@@ -11,8 +11,16 @@ def _bool(name: str, default: str = "0") -> bool:
     return os.environ.get(name, default).strip().lower() in ("1", "true", "yes", "on")
 
 
+_OFF = ("none", "off", "-")
+
+
 def _list(name: str, default: str) -> list[str]:
-    return [x.strip() for x in os.environ.get(name, default).split(",") if x.strip()]
+    """Comma list. "none"/"off"/"-" mean an explicitly empty list: a sentinel,
+    because an empty env value is easy to lose between Portainer and compose."""
+    raw = os.environ.get(name, default)
+    if raw.strip().lower() in _OFF:
+        return []
+    return [x.strip() for x in raw.split(",") if x.strip()]
 
 
 # --- team ------------------------------------------------------------------
@@ -21,10 +29,35 @@ TEAM_NAME = os.environ.get("TEAM_NAME", "Bristol Bears")
 TEAM_BADGE = os.environ.get("TEAM_BADGE", "")
 
 # --- fixtures source ------------------------------------------------------
-# "club_wp"  — club WordPress feed (Bristol Bears), iCal core + JSON enrichment
-# "stub"     — same adapter, reading tests/fixtures/ (offline dev, tests, demo)
+# "club_wp"      — club WordPress feed (Bristol Bears), iCal core + JSON enrichment
+# "world_rugby"  — World Rugby data API (national sides; England)
+# "stub"         — legacy alias: club_wp reading tests/fixtures/
+# SOURCE_STUB=1 makes any adapter read its saved responses from STUB_DIR instead
+# of the network (offline dev, tests, demo). See app/sources/__init__.py.
 FIXTURES_SOURCE = os.environ.get("FIXTURES_SOURCE", "club_wp")
+SOURCE_STUB = _bool("SOURCE_STUB", "0")
 STUB_DIR = os.environ.get("STUB_DIR", "/app/tests/fixtures")
+
+
+def stub_mode() -> bool:
+    return FIXTURES_SOURCE == "stub" or SOURCE_STUB
+
+
+# --- World Rugby adapter (app/sources/world_rugby.py) -------------------------
+WR_API_BASE = os.environ.get(
+    "WR_API_BASE", "https://api.wr-rims-prod.pulselive.com/rugby/v3").rstrip("/")
+# Pinned team id, never searched at runtime (England men's XV = 34; England
+# Women / A / U20 have other ids). Required when FIXTURES_SOURCE=world_rugby.
+WR_TEAM_ID = os.environ.get("WR_TEAM_ID", "").strip()
+# Query window around now. Back far enough to keep the last completed Six
+# Nations and the last result in view; forward past the next World Cup.
+WR_DAYS_BACK = int(os.environ.get("WR_DAYS_BACK", "400"))
+WR_DAYS_FORWARD = int(os.environ.get("WR_DAYS_FORWARD", "550"))
+# Competitions in which every team plays the final round (positional
+# play-offs), so an unlisted last fixture is certain, only its opponent unknown.
+# A placeholder "Opponent TBC" is derived from the competition's end date.
+WR_FINAL_ROUND_COMPS = _list("WR_FINAL_ROUND_COMPS", "Nations Championship")
+WR_FINAL_ROUND_SPAN_DAYS = int(os.environ.get("WR_FINAL_ROUND_SPAN_DAYS", "3"))
 
 CLUB_FEED_BASE = os.environ.get(
     "CLUB_FEED_BASE", "https://www.bristolbearsrugby.com/wp-json/afz/v1").rstrip("/")
@@ -60,6 +93,11 @@ COMP_LABELS: dict[str, tuple[str, str, str]] = {
     "PREM Rugby Cup": ("premcup", "PREM Rugby Cup", "PREM Cup"),
     "European Cup": _EURO.get(EURO_TIER, _EURO["champions"]),
     "Exhibition": ("friendly", "Friendly", "Friendly"),
+    # National-side competitions (world_rugby adapter strips the year first).
+    "Six Nations": ("sixnations", "Six Nations", "Six Nations"),
+    "Nations Championship": ("nations", "Nations Championship", "Nations Ch'ship"),
+    "Men's Rugby World Cup": ("rwc", "Rugby World Cup", "World Cup"),
+    "Rugby World Cup": ("rwc", "Rugby World Cup", "World Cup"),
 }
 COMP_LABELS.update({k: tuple(v) for k, v in json.loads(os.environ.get("COMP_LABELS") or "{}").items()})
 

@@ -1,0 +1,65 @@
+ER candidate links: 0
+WR England id: 34
+== wr/match_teamId.json  n=100
+== wr/match_teams.json  n=19
+2026-02-07	England v Wales	48-7	Six Nations 2026	C
+2026-02-14	Scotland v England	31-20	Six Nations 2026	C
+2026-02-21	England v Ireland	21-42	Six Nations 2026	C
+2026-03-07	Italy v England	23-18	Six Nations 2026	C
+2026-03-14	France v England	48-46	Six Nations 2026	C
+2026-07-04	South Africa v England	45-21	Nations Championship 2026	C
+2026-07-11	Fiji v England	8-73	Nations Championship 2026	C
+2026-07-18	Argentina v England	24-31	Nations Championship 2026	C
+2026-11-08	England v Australia	0-0	Nations Championship 2026	U
+2026-11-14	England v Japan	0-0	Nations Championship 2026	U
+2026-11-21	England v New Zealand	0-0	Nations Championship 2026	U
+2027-02-05	Ireland v England	0-0	Six Nations 2027	U
+2027-02-14	England v France	0-0	Six Nations 2027	U
+2027-02-20	England v Italy	0-0	Six Nations 2027	U
+2027-03-06	Wales v England	0-0	Six Nations 2027	U
+2027-03-13	England v Scotland	0-0	Six Nations 2027	U
+2027-10-02	England v Tonga	0-0	Men's Rugby World Cup 2027	U
+2027-10-08	England v Zimbabwe	0-0	Men's Rugby World Cup 2027	U
+2027-10-16	England v Wales	0-0	Men's Rugby World Cup 2027	U
+ESPN England id: 1
+core events L=180659 season=2026 n=5
+core events L=180659 season=2027 n=0
+core events L=180659 season=2028 n=0
+core events L=17567 season=2026 n=6
+core events L=17567 season=2027 n=0
+core events L=17567 season=2028 n=0
+core events L=289234 season=2026 n=0
+core events L=289234 season=2027 n=0
+core events L=289234 season=2028 n=0
+core events L=164205 season=2026 n=0
+core events L=164205 season=2027 n=3
+core events L=164205 season=2028 n=0
+== ESPN summaries (date, teams, score, status)
+2026-02-07T16:40Z	England 48 v Wales 7	FT	espn/sum_180659_602504.json
+2026-02-14T16:40Z	Scotland 31 v England 20	FT	espn/sum_180659_602506.json
+2026-02-21T14:10Z	England 21 v Ireland 42	FT	espn/sum_180659_602508.json
+2026-03-07T16:40Z	Italy 23 v England 18	FT	espn/sum_180659_602513.json
+2026-03-14T20:10Z	France 48 v England 46	FT	espn/sum_180659_602516.json
+2026-07-04T15:40Z	South Africa 45 v England 21	FT	espn/sum_17567_603979.json
+2026-07-11T13:10Z	Fiji 8 v England 73	FT	espn/sum_17567_603984.json
+2026-07-18T19:10Z	Argentina 24 v England 31	FT	espn/sum_17567_603992.json
+2026-11-08T15:10Z	England  v Australia 	Scheduled	espn/sum_17567_603998.json
+2026-11-14T16:40Z	England  v Japan 	Scheduled	espn/sum_17567_604002.json
+2026-11-21T14:10Z	England  v New Zealand 	Scheduled	espn/sum_17567_604005.json
+2027-10-02T10:15Z	England  v Tonga 	Scheduled	espn/sum_164205_603503.json
+2027-10-08T09:45Z	England  v Zimbabwe 	Scheduled	espn/sum_164205_603512.json
+2027-10-16T08:45Z	England  v Wales 	Scheduled	espn/sum_164205_603528.json
+sb 180659 20260314: Ireland vs Scotland | Wales vs Italy | France vs England
+sb 17567 20260704: New Zealand vs France | Japan vs Italy | Australia vs Ireland | Fiji vs Wales | South Africa vs England | Argentina vs Scotland
+sb 17567 20260711: New Zealand vs Italy | Australia vs France | Japan vs Ireland | Fiji vs England | South Africa vs Scotland | Argentina vs Wales
+sb 17567 20260718: New Zealand vs Ireland | Japan vs France | Australia vs Italy | Fiji vs Scotland | South Africa vs Wales | Argentina vs England
+sb 289234 20260704: none/ERR
+sb 17567 20261108: England vs Australia
+sb 17567 20261114: Italy vs Argentina | Wales vs New Zealand | England vs Japan | Ireland vs Fiji
+sb 17567 20261121: England vs New Zealand | Scotland vs Japan | Ireland vs South Africa | Italy vs Fiji | France vs Argentina | Wales vs Australia
+sb 180659 20270205: none/ERR
+sb 164205 20271002: New Zealand vs Chile | France vs United States of America | England vs Tonga | Japan vs Samoa | South Africa vs Italy
+== HTTP status counts
+     56 200
+      6 403
+      1 404

@@ -8,9 +8,11 @@ One codebase serves one stack per team:
 | Stack | Host port | Container | Source adapter |
 |---|---|---|---|
 | Bristol Bears | 3459 | `trmnl-bristol-api` | `club_wp` (club website feed) |
-| England | 3460 | `trmnl-england-api` | *later* |
+| England | 3460 | `trmnl-england-api` | `world_rugby` (World Rugby data API) |
 
-**Status:** Phases 2–5 are done: sidecar core, broadcast rights map, crests and the `full.liquid` plugin. Phase 6 (hardening) is still to come.
+**Status:** Bristol: Phases 2–5 done (sidecar, rights map, crests, `full.liquid`); Phase 6 (hardening) to come.
+England: Phase 2 done (World Rugby adapter + dispatcher, stub-tested). Dormant mode, the England rights map,
+the plugin branch and the 3460 deployment are still to come — **do not deploy the England stack yet**.
 
 ## Architecture
 
@@ -74,6 +76,50 @@ Each limitation is listed here and in the chat summary, not just in a docstring:
 10. **Broadcast comes from a rights map, not listings.** See [Broadcast](#broadcast):
     - PREM is resolved as "TNT Sports". The specific TNT channel isn't known in advance, and some PREM games are on HBO Max only.
     - ITV's free-to-air picks and televised PREM Cup games only appear once added as overrides.
+
+## England: data source and its risk
+
+**Source:** World Rugby's own data API (Pulselive, the API behind world.rugby), keyless:
+`GET https://api.wr-rims-prod.pulselive.com/rugby/v3/match?teams=34&startDate=…&endDate=…`.
+England men's XV is team **34**, pinned in `WR_TEAM_ID` and never searched at runtime
+(England Women / A / U20 have other ids). One call returns every England fixture in a
+400-days-back / 550-days-forward window.
+
+**Why this source:** in Phase 1 (15 Oct 2026) it was the only free source that carried every
+row of the coverage matrix: Six Nations 2026 *and 2027*, Nations Championship July and
+November, RWC 2027 pool. ESPN has no 2027 Six Nations; englandrugby.com blocks non-browser
+clients (HTTP 403). Every kickoff present in both World Rugby and ESPN agreed to the minute.
+Decision record: project doc `rugby/phase1-england-source-decision.md`.
+
+**Protections** (same model as Bristol's):
+
+1. **Ignored team filter is caught.** World Rugby silently ignores `teamId=` and returns 100
+   unrelated matches; only `teams=` filters. Any match without team 34 refuses the whole
+   response → DATA CHECK.
+2. **Per-competition shape checks** (counts keyed by competition-year, e.g. `Six Nations 2027`).
+   A competition may only disappear once its last match has aged out of the query window.
+3. **Last good persisted**, outage → stale, as for Bristol.
+4. **Tests pin the format:** `tests/fixtures/england/` holds the real probe responses.
+
+**Fallbacks:** ESPN core API (England = team 1; no 2027 Six Nations at probe time),
+TheSportsDB premium.
+
+## England: known limitations
+
+1. **Undocumented API.** See above.
+2. **Finals weekend is derived, not listed.** The Nations Championship finals (27–29 Nov 2026,
+   positional play-offs) are not in any source until pairings are known after round 6.
+   Every team plays, so an all-day **"Opponent TBC"** fixture is derived from the
+   competition's end date (`WR_FINAL_ROUND_COMPS`, `WR_FINAL_ROUND_SPAN_DAYS=3`) and held
+   for the whole weekend. It assumes the final round fills the last 3 days of the
+   competition; the real fixture replaces it as soon as World Rugby lists it.
+3. **No round numbers for Six Nations / Nations Championship** (World Rugby gives "Match 15").
+   RWC carries its phase ("Pool F"). Round labels for national competitions arrive in Phase 3.
+4. **No crests:** World Rugby serves no logo URLs. Ovals show the team abbreviation.
+5. **Venue string:** "Stadium, City", with the city dropped when it is already in the name
+   (*Brisbane Stadium*) and dual names trimmed ("Brisbane | Meeanjin" → Brisbane).
+6. **Event status is unreliable** (the finished 2026 Six Nations still says "Scheduled");
+   only per-match status is used.
 
 ## Broadcast
 
@@ -228,7 +274,7 @@ Never run `docker compose` by hand in `/data/compose/<id>`. It starts a separate
 ## Tests
 
 ```bash
-pip install -r requirements.txt pytest python-liquid
+pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 

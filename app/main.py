@@ -22,7 +22,7 @@ from flask import Flask, abort, jsonify, request, send_file
 from . import config, crests, demo, normalise
 from .errors import ShapeError, SourceUnavailable
 from .model import Fixture
-from .sources import club_wp
+from . import sources
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s")
@@ -80,7 +80,7 @@ def refresh_if_due(now: dt.datetime | None = None, force: bool = False) -> None:
             return
         now = now or dt.datetime.now(dt.timezone.utc)
         try:
-            res = club_wp.fetch(now, _state["counts"])
+            res = sources.adapter().fetch(now, _state["counts"])
         except SourceUnavailable as exc:
             log.error("source unavailable, serving last good: %s", exc)
             _state.update(stale=True, last_error=str(exc))
@@ -117,7 +117,7 @@ def _crest_teams(fixtures: list[Fixture]) -> dict[str, str]:
 
 def _sources() -> dict:
     return {
-        "fixtures": "stub" if config.FIXTURES_SOURCE == "stub" else "club-ical",
+        "fixtures": "stub" if config.stub_mode() else sources.adapter().SOURCE_LABEL,
         "enrich": {True: "club-json", False: "failed", None: "off"}[_state["enrich_ok"]],
         "broadcast": "rights-map",
     }
@@ -126,7 +126,7 @@ def _sources() -> dict:
 def _now_override() -> dt.datetime | None:
     """?now=2026-10-24T15:00:00Z — stub mode only, for forcing states."""
     raw = request.args.get("now")
-    if not raw or config.FIXTURES_SOURCE != "stub":
+    if not raw or not config.stub_mode():
         return None
     return dt.datetime.fromisoformat(raw.replace("Z", "+00:00")).astimezone(dt.timezone.utc)
 

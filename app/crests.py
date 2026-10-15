@@ -196,7 +196,7 @@ def ensure(url: str, name: str) -> bool:
 
 def prewarm(teams: dict[str, str]) -> dict[str, int]:
     """teams: {logo url: team name}. Called after a successful refresh."""
-    if config.FIXTURES_SOURCE == "stub":
+    if config.stub_mode():
         return {"ok": 0, "failed": 0}
     done = {"ok": 0, "failed": 0}
     with _lock:

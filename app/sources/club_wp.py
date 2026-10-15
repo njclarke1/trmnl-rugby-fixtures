@@ -39,6 +39,8 @@ from ..model import Fixture, Team, is_ours, parse_utc, synthetic_id
 
 log = logging.getLogger(__name__)
 
+SOURCE_LABEL = "club-ical"
+
 SUMMARY_RE = re.compile(r"^(?P<home>.+?)\s+(?:vs?\.?)\s+(?P<away>.+?)(?:\s+-\s+(?P<comp>[^-].*))?$",
                         re.IGNORECASE)
 PLACEHOLDER_VENUES = {"", "tbd", "tbc", "tba", "to be confirmed"}
@@ -71,7 +73,7 @@ class _NotFound(Exception):
 
 def _get(kind: str, season: str) -> str:
     cat = config.CLUB_FEED_CATEGORY
-    if config.FIXTURES_SOURCE == "stub":
+    if config.stub_mode():
         name = f"ical_{season}_{cat}.ics" if kind == "ical" else f"fixtures_{season}_{cat}.json"
         path = os.path.join(config.STUB_DIR, name)
         if not os.path.exists(path):

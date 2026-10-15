@@ -1,0 +1,5 @@
+# Test-only. Without python-liquid, tests/test_plugin.py SKIPS silently and the
+# suite under-reports (76 + 1 skipped instead of the full count).
+-r requirements.txt
+pytest>=8
+python-liquid==2.*
