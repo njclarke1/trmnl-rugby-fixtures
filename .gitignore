@@ -1,0 +1,13 @@
+# Secrets & local config
+.env
+
+# Runtime cache: last-good fixtures and processed crests.
+# Club crests are trademarked assets: never commit them.
+cache/
+app/cache/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
