@@ -1,0 +1,31 @@
+# One repo, one stack per team. Deploy each as a Portainer git stack with its
+# own env (see .env.example). Bristol: HOST_PORT 3459, CONTAINER_NAME
+# trmnl-bristol-api. England (later): 3460, trmnl-england-api.
+services:
+  api:
+    build: .
+    image: trmnl-rugby-api:${STACK_TAG:-bristol}
+    # Rebuild from the fresh clone on every deploy. Without this a Portainer
+    # git redeploy finds the existing local tag and reuses the OLD image.
+    pull_policy: build
+    container_name: ${CONTAINER_NAME:-trmnl-bristol-api}
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3459}:3459"
+    environment:
+      TEAM_NAME: ${TEAM_NAME:-Bristol Bears}
+      TEAM_BADGE: ${TEAM_BADGE:-}
+      FIXTURES_SOURCE: ${FIXTURES_SOURCE:-club_wp}
+      CLUB_FEED_BASE: ${CLUB_FEED_BASE:-https://www.bristolbearsrugby.com/wp-json/afz/v1}
+      CLUB_FEED_CATEGORY: ${CLUB_FEED_CATEGORY:-men}
+      SEASON_IDS: ${SEASON_IDS:-}
+      EURO_TIER: ${EURO_TIER:-champions}
+      TBC_HORIZON_DAYS: ${TBC_HORIZON_DAYS:-42}
+      OWNED_CHANNELS: ${OWNED_CHANNELS:-sky,tnt,bbc,itv,channel4,channel5,s4c}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://192.168.68.111:3459}
+    volumes:
+      # Named volume: survives Portainer redeploys (a ./cache bind mount lives in
+      # the re-cloned stack directory). Holds last-good fixtures and crests.
+      - cache:/app/cache
+volumes:
+  cache:

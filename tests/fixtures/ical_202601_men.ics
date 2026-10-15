@@ -1,0 +1,436 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ZContent.net//ZapCalLib 1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Bristol Bears Rugby Men Fixtures Season 2026/2027
+NAME:Bristol Bears Rugby Men Fixtures Season 2026/2027
+X-WR-CALDESC:Bristol Bears Rugby Men Fixtures Season 2026/2027
+DESCRIPTION:Bristol Bears Rugby Men Fixtures Season 2026/2027
+X-WR-TIMEZONE:Europe/London
+X-PUBLISHED-TTL:PT1H
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+BEGIN:VTIMEZONE
+TZID:Europe/London
+BEGIN:DAYLIGHT
+DTSTART:20250330T020000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:BST
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20251026T010000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20260329T020000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:BST
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20261025T010000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20270328T020000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:BST
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20271031T010000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20280326T020000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:BST
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20281029T010000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20290325T020000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:BST
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20291028T010000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20260905T150500
+DTEND;TZID=Europe/London:20260905T170500
+SUMMARY:Bristol Bears vs Gloucester Rugby - Prem Rugby Cup
+UID:294854@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-gloucester-rugby-13/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-gloucester-rugby-13/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20260912T150000
+DTEND;TZID=Europe/London:20260912T170000
+SUMMARY:Exeter Chiefs vs Bristol Bears - Prem Rugby Cup
+UID:294858@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/exeter-chiefs-vs-bristol-bears-21/
+LOCATION:Sandy Park
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/exete
+ r-chiefs-vs-bristol-bears-21/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20260926T173000
+DTEND;TZID=Europe/London:20260926T193000
+SUMMARY:Sale Sharks vs Bristol Bears - Gallagher Premiership
+UID:294911@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/sale-sharks-vs-bristol-bears-16/
+LOCATION:CorpAcq Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/sale-
+ sharks-vs-bristol-bears-16/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261003T150500
+DTEND;TZID=Europe/London:20261003T170500
+SUMMARY:Bristol Bears vs Northampton Saints - Gallagher Premiership
+UID:294914@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-northampton-saints-10/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-northampton-saints-10/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261010T173000
+DTEND;TZID=Europe/London:20261010T193000
+SUMMARY:Saracens vs Bristol Bears - Gallagher Premiership
+UID:294920@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/saracens-vs-bristol-bears-14/
+LOCATION:StoneX Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/sarac
+ ens-vs-bristol-bears-14/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261017T151500
+DTEND;TZID=Europe/London:20261017T171500
+SUMMARY:DHL Stormers vs Bristol Bears - European Cup
+UID:293322@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/dhl-stormers-vs-bristol-bears/
+LOCATION:DHL Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/dhl-s
+ tormers-vs-bristol-bears/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261024T173000
+DTEND;TZID=Europe/London:20261024T193000
+SUMMARY:Bristol Bears vs Exeter Chiefs - Gallagher Premiership
+UID:294926@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-exeter-chiefs-18/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-exeter-chiefs-18/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261030T194500
+DTEND;TZID=Europe/London:20261030T214500
+SUMMARY:Bristol Bears vs Leicester Tigers - Gallagher Premiership
+UID:294928@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-leicester-tigers-10/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-leicester-tigers-10/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261106T194500
+DTEND;TZID=Europe/London:20261106T214500
+SUMMARY:Sale Sharks vs Bristol Bears - Prem Rugby Cup
+UID:294862@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/sale-sharks-vs-bristol-bears-15/
+LOCATION:CorpAcq Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/sale-
+ sharks-vs-bristol-bears-15/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261120T194500
+DTEND;TZID=Europe/London:20261120T214500
+SUMMARY:Bristol Bears vs Bath Rugby - Prem Rugby Cup
+UID:294870@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-bath-rugby-12/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-bath-rugby-12/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261204T194500
+DTEND;TZID=Europe/London:20261204T214500
+SUMMARY:Bath Rugby vs Bristol Bears - Gallagher Premiership
+UID:294933@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bath-rugby-vs-bristol-bears-13/
+LOCATION:The Rec
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/bath-
+ rugby-vs-bristol-bears-13/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261212T200000
+DTEND;TZID=Europe/London:20261212T220000
+SUMMARY:Bristol Bears vs Munster Rugby - European Cup
+UID:293335@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-munster-rugby/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-munster-rugby/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261220T150000
+DTEND;TZID=Europe/London:20261220T170000
+SUMMARY:Bristol Bears vs Harlequins - Gallagher Premiership
+UID:294942@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-harlequins-14/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-harlequins-14/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20261226T150500
+DTEND;TZID=Europe/London:20261226T170500
+SUMMARY:Bristol Bears vs Newcastle Red Bulls - Gallagher Premiership
+UID:294944@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-newcastle-red-bulls/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-newcastle-red-bulls/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270101T194500
+DTEND;TZID=Europe/London:20270101T214500
+SUMMARY:Gloucester Rugby vs Bristol Bears - Gallagher Premiership
+UID:294948@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/gloucester-rugby-vs-bristol-bears-11/
+LOCATION:Kingsholm Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/glouc
+ ester-rugby-vs-bristol-bears-11/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270110T130000
+DTEND;TZID=Europe/London:20270110T150000
+SUMMARY:Racing 92 vs Bristol Bears - European Cup
+UID:293351@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/racing-92-vs-bristol-bears/
+LOCATION:TBD
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/racin
+ g-92-vs-bristol-bears/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270116T151500
+DTEND;TZID=Europe/London:20270116T171500
+SUMMARY:Bristol Bears vs Bordeaux-Begles - European Cup
+UID:293361@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-bordeaux-begles-3/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-bordeaux-begles-3/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270123T150000
+DTEND;TZID=Europe/London:20270123T170000
+SUMMARY:Exeter Chiefs vs Bristol Bears - Gallagher Premiership
+UID:294954@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/exeter-chiefs-vs-bristol-bears-22/
+LOCATION:Sandy Park
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/exete
+ r-chiefs-vs-bristol-bears-22/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270130T150000
+DTEND;TZID=Europe/London:20270130T170000
+SUMMARY:Bristol Bears vs Sale Sharks - Prem Rugby Cup
+UID:294874@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-sale-sharks-15/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-sale-sharks-15/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270206T150000
+DTEND;TZID=Europe/London:20270206T170000
+SUMMARY:Bath Rugby vs Bristol Bears - Prem Rugby Cup
+UID:294878@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bath-rugby-vs-bristol-bears-12/
+LOCATION:The Rec
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/bath-
+ rugby-vs-bristol-bears-12/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270219T194500
+DTEND;TZID=Europe/London:20270219T214500
+SUMMARY:Bristol Bears vs Exeter Chiefs - Prem Rugby Cup
+UID:294886@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-exeter-chiefs-17/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-exeter-chiefs-17/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270227T150000
+DTEND;TZID=Europe/London:20270227T170000
+SUMMARY:Gloucester Rugby vs Bristol Bears - Prem Rugby Cup
+UID:294891@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/gloucester-rugby-vs-bristol-bears-10/
+LOCATION:Kingsholm Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/glouc
+ ester-rugby-vs-bristol-bears-10/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270320T150000
+DTEND;TZID=Europe/London:20270320T170000
+SUMMARY:Bristol Bears vs Sale Sharks - Gallagher Premiership
+UID:294959@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-sale-sharks-16/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-sale-sharks-16/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270327T150000
+DTEND;TZID=Europe/London:20270327T170000
+SUMMARY:Newcastle Red Bulls vs Bristol Bears - Gallagher Premiership
+UID:294965@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/newcastle-red-bulls-vs-bristol-bears/
+LOCATION:Kingston Park
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/newca
+ stle-red-bulls-vs-bristol-bears/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270417T150000
+DTEND;TZID=Europe/London:20270417T170000
+SUMMARY:Bristol Bears vs Gloucester Rugby - Gallagher Premiership
+UID:294969@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-gloucester-rugby-14/
+LOCATION:Principality Stadium
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-gloucester-rugby-14/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270424T150000
+DTEND;TZID=Europe/London:20270424T170000
+SUMMARY:Harlequins vs Bristol Bears - Gallagher Premiership
+UID:294974@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/harlequins-vs-bristol-bears-16/
+LOCATION:Twickenham Stoop
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/harle
+ quins-vs-bristol-bears-16/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270508T150000
+DTEND;TZID=Europe/London:20270508T170000
+SUMMARY:Bristol Bears vs Saracens - Gallagher Premiership
+UID:294978@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-saracens-14/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-saracens-14/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270515T150000
+DTEND;TZID=Europe/London:20270515T170000
+SUMMARY:Leicester Tigers vs Bristol Bears - Gallagher Premiership
+UID:294984@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/leicester-tigers-vs-bristol-bears-9/
+LOCATION:Mattioli Woods Welford Road
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/leice
+ ster-tigers-vs-bristol-bears-9/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270529T150000
+DTEND;TZID=Europe/London:20270529T170000
+SUMMARY:Bristol Bears vs Bath Rugby - Gallagher Premiership
+UID:294988@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/bristol-bears-vs-bath-rugby-13/
+LOCATION:Ashton Gate
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/brist
+ ol-bears-vs-bath-rugby-13/
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/London:20270605T150000
+DTEND;TZID=Europe/London:20270605T170000
+SUMMARY:Northampton Saints vs Bristol Bears - Gallagher Premiership
+UID:294996@www.bristolbearsrugby.com
+DTSTAMP:20261014T204933
+DESCRIPTION:See more details at https://www.bristolbearsrugby.com/match-cen
+ tre/fixtures/northampton-saints-vs-bristol-bears-10/
+LOCATION:Franklin's Gardens
+URL;VALUE=URI:https://www.bristolbearsrugby.com/match-centre/fixtures/north
+ ampton-saints-vs-bristol-bears-10/
+END:VEVENT
+END:VCALENDAR
