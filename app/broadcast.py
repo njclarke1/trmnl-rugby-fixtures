@@ -43,13 +43,15 @@ def _load_overrides() -> dict[str, dict]:
 OVERRIDES = _load_overrides()
 
 
-def _result(state: str, channels: list[str], note: str | None, confidence: str) -> dict:
+def _result(state: str, channels: list[str], note: str | None, confidence: str,
+            free_to_air: bool = False) -> dict:
     owned = [c for c in channels if is_owned(c)]
     ordered = owned + [c for c in channels if c not in owned]
     primary = ordered[0] if ordered else None
     others = ordered[1:]
     if state == "available":
-        status, also = "You have this", ("Also: " + " · ".join(others)) if others else (note or "")
+        status = "Free to air" if free_to_air else "You have this"
+        also = ("Also: " + " · ".join(others)) if others else (note or "")
     elif state == "unavailable":
         status, also = "Not on your TV", note or f"Not in your {config.OWNED_LABEL} package"
     elif state == "none":
@@ -76,7 +78,8 @@ def resolve(fx: Fixture, comp_key: str, overrides: dict | None = None) -> dict:
         if not chans:
             return _result("none", [], ov.get("note"), "override")
         state = "available" if any(is_owned(c) for c in chans) else "unavailable"
-        return _result(state, chans, ov.get("note"), "override")
+        fta = bool((RIGHTS.get(comp_key) or {}).get("free_to_air"))
+        return _result(state, chans, ov.get("note"), "override", free_to_air=fta)
 
     entry = RIGHTS.get(comp_key)
     if entry is None:
@@ -96,4 +99,5 @@ def resolve(fx: Fixture, comp_key: str, overrides: dict | None = None) -> dict:
         if owned:
             return _result("tbc", [], entry.get("note"), "rights-map")
         return _result("unavailable", chans, entry.get("note"), "rights-map")
-    return _result("available" if owned else "unavailable", chans, entry.get("note"), "rights-map")
+    return _result("available" if owned else "unavailable", chans, entry.get("note"), "rights-map",
+                   free_to_air=bool(entry.get("free_to_air")))

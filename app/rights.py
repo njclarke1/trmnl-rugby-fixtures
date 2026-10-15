@@ -24,6 +24,25 @@ Verified 15 Oct 2026 against:
 
 NOT verified (Aug research, no rights-holder source found): "Challenge Cup —
 selected games on the BBC". Not encoded.
+
+England (national side; world_rugby adapter), verified 15 Oct 2026 against:
+  Six Nations  ITV press centre, 14 Mar 2025 — BBC/ITV four-year deal 2026–2029:
+               ITV ten live games a season "including every England fixture",
+               on ITV1, ITVX, STV and STV Player. BBC: Scotland/Wales home games.
+               itv.com/presscentre/node/44016
+  Nations Ch.  ITV press centre, 26 Jan 2026 — ITV and STV exclusive free-to-air
+               home of the 2026 and 2028 editions (every fixture); also the 2027
+               Summer Nations Series and 2029 July/Autumn Nations Series, to 2029.
+               itv.com/presscentre/node/54366
+  RWC 2027     World Rugby, Jul 2026 — ITV exclusive UK broadcaster, all 52
+               matches live, on ITV and ITVX (ITV1 vs ITV4 per match not stated).
+               world.rugby/news/1045829
+STV is ITV's Scottish licensee (same family in channels.py); it is left out of
+the displayed channel lists because the panel is in England.
+
+NOT encoded: the 2027 Summer Nations Series and 2029 July/Autumn series. Their
+World Rugby competition names are unknown until listed, so they resolve to
+`tbc`; add an entry (or overrides) once the label is seen. ITV per the release.
 """
 import datetime as dt
 
@@ -55,6 +74,27 @@ RIGHTS: dict[str, dict] = {
         "coverage": "selected-same-holder",
         "note": "Premier Sports shows selected games",
         "valid_until": SEASON_END,
+    },
+    # --- England (free-to-air: the panel says "Free to air", not "You have this")
+    "sixnations": {
+        "channels": ["ITV1", "ITVX"],
+        "coverage": "all",                    # every England fixture (see above)
+        "free_to_air": True,
+        "valid_until": dt.date(2029, 3, 31),
+    },
+    "nations": {
+        "channels": ["ITV1", "ITVX"],
+        "coverage": "all",
+        "free_to_air": True,
+        # 2026 and 2028 editions. There is no 2027 edition (Summer Nations Series).
+        "valid_until": dt.date(2028, 11, 30),
+    },
+    "rwc": {
+        "channels": ["ITV", "ITVX"],
+        "coverage": "all",
+        "free_to_air": True,
+        "note": "ITV1 or ITV4: confirmed nearer the match",
+        "valid_until": dt.date(2027, 11, 13),
     },
     "friendly": {
         "channels": [],

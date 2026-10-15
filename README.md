@@ -11,9 +11,9 @@ One codebase serves one stack per team:
 | England | 3460 | `trmnl-england-api` | `world_rugby` (World Rugby data API) |
 
 **Status:** Bristol: Phases 2–5 done (sidecar, rights map, crests, `full.liquid`); Phase 6 (hardening) to come.
-England: Phases 2–3 done (World Rugby adapter, dispatcher, dormant mode with standings and ranking).
-The England rights map, the plugin branch and the 3460 deployment are still to come — **do not deploy
-the England stack yet**.
+England: Phases 2–4 done (World Rugby adapter, dispatcher, dormant mode with standings and ranking,
+rights map). The plugin branch and the 3460 deployment are still to come — **do not deploy the England
+stack yet**.
 
 ## Architecture
 
@@ -171,6 +171,18 @@ The four states are `available`, `unavailable`, `tbc` and `none` (confirmed not 
 `"channels": []` marks a game as confirmed not televised. Use overrides for ITV's free-to-air PREM picks, which are announced in blocks, and for televised PREM Cup games. As of 15 Oct 2026, no Bristol game has been picked by ITV.
 
 **Unverified, so not encoded:** "Challenge Cup — selected games on the BBC". No rights-holder source was found for this.
+
+**England** (same map, keys `sixnations`, `nations`, `rwc`; verified 15 Oct 2026):
+
+| Competition | UK broadcaster | Source | `valid_until` |
+|---|---|---|---|
+| Six Nations | ITV1 / ITVX, every England game (BBC/ITV deal 2026–29) | ITV press centre, 14 Mar 2025 | 31 Mar 2029 |
+| Nations Championship | ITV1 / ITVX (and STV), every game, 2026 and 2028 editions | ITV press centre, 26 Jan 2026 | 30 Nov 2028 |
+| Rugby World Cup 2027 | ITV / ITVX, all 52 games live | World Rugby, Jul 2026 | 13 Nov 2027 |
+
+These are flagged `free_to_air`, so the status chip reads **Free to air** rather than "You have this" (overrides on these competitions keep that wording). STV is ITV's Scottish licensee and is left off the displayed list. The RWC channel is shown as "ITV" because the release doesn't say ITV1 or ITV4 per match; add an override nearer the time if you want it exact.
+
+**England gaps:** the 2027 Summer Nations Series and 2029 July/Autumn series are ITV's per the same release, but World Rugby hasn't listed them, so their competition names are unknown. They resolve to `tbc` until a `rights.py` entry (keyed on the label World Rugby uses) or a per-fixture override is added. Nothing is guessed.
 
 **HBO Max:** it is a separate channel family (`hbomax`). Add it to `OWNED_CHANNELS` if you have TNT through HBO Max; then HBO Max-only games are also counted as yours.
 
