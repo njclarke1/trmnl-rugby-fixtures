@@ -59,6 +59,28 @@ WR_DAYS_FORWARD = int(os.environ.get("WR_DAYS_FORWARD", "550"))
 WR_FINAL_ROUND_COMPS = _list("WR_FINAL_ROUND_COMPS", "Nations Championship")
 WR_FINAL_ROUND_SPAN_DAYS = int(os.environ.get("WR_FINAL_ROUND_SPAN_DAYS", "3"))
 
+# --- dormant mode (app/dormant.py, app/extras.py) ------------------------------
+# OFF by default: Bristol's payload must not change. England sets DORMANT_MODE=1.
+DORMANT_MODE = _bool("DORMANT_MODE", "0")
+# Next fixture further away than this → dormant screen.
+IMMINENT_DAYS = int(os.environ.get("IMMINENT_DAYS", "21"))
+# Fixtures closer together than this belong to one "window" (cluster).
+WINDOW_GAP_DAYS = int(os.environ.get("WINDOW_GAP_DAYS", "21"))
+# Standings and ranking refresh far less often than fixtures.
+EXTRAS_TTL = int(os.environ.get("EXTRAS_TTL", "86400"))
+ENABLE_RANKING = _bool("ENABLE_RANKING", "1")
+# Spine text on the dormant screen. Blank = "<TEAM_NAME> Rugby".
+DORMANT_SPINE = os.environ.get("DORMANT_SPINE", "")
+# Competition key → ESPN league slug, for standings World Rugby leaves empty.
+ESPN_SITE_BASE = os.environ.get(
+    "ESPN_SITE_BASE", "https://site.api.espn.com/apis/v2/sports/rugby").rstrip("/")
+ESPN_STANDINGS_SLUGS: dict[str, str] = {"sixnations": "180659", "nations": "17567",
+                                        "rwc": "164205"}
+ESPN_STANDINGS_SLUGS.update(json.loads(os.environ.get("ESPN_STANDINGS_SLUGS") or "{}"))
+# Rounds per national competition (every team plays every round, no byes).
+NATIONAL_ROUNDS: dict[str, int] = {"sixnations": 5, "nations": 6}
+NATIONAL_ROUNDS.update(json.loads(os.environ.get("NATIONAL_ROUNDS") or "{}"))
+
 CLUB_FEED_BASE = os.environ.get(
     "CLUB_FEED_BASE", "https://www.bristolbearsrugby.com/wp-json/afz/v1").rstrip("/")
 CLUB_FEED_CATEGORY = os.environ.get("CLUB_FEED_CATEGORY", "men")

@@ -19,7 +19,7 @@ import time
 
 from flask import Flask, abort, jsonify, request, send_file
 
-from . import config, crests, demo, normalise
+from . import config, crests, demo, extras, normalise
 from .errors import ShapeError, SourceUnavailable
 from .model import Fixture
 from . import sources
@@ -38,7 +38,7 @@ def _blank_state() -> dict:
     return {"fixtures": None, "counts": {}, "fetched_at": 0.0, "good_at": 0.0,
             "season_status": {}, "warnings": [], "enrich_ok": None,
             "stale": False, "data_check": None, "last_error": None, "loaded": False,
-            "crests": None}
+            "crests": None, "extras": None}
 
 
 _state = _blank_state()
@@ -71,6 +71,22 @@ def _save_last_good() -> None:
 
 
 def refresh_if_due(now: dt.datetime | None = None, force: bool = False) -> None:
+    _refresh_fixtures(now, force)
+    _refresh_extras(now)
+
+
+def _refresh_extras(now: dt.datetime | None) -> None:
+    """Dormant-mode standings/ranking. Own TTL inside extras.refresh; never raises."""
+    if not config.DORMANT_MODE:
+        return
+    if _state["extras"] is None:
+        _state["extras"] = extras.load()
+    if _state["fixtures"]:
+        extras.refresh(_state["extras"], _state["fixtures"],
+                       now or dt.datetime.now(dt.timezone.utc))
+
+
+def _refresh_fixtures(now: dt.datetime | None = None, force: bool = False) -> None:
     with _lock:
         if not _state["loaded"]:
             _load_last_good()
@@ -144,7 +160,7 @@ def fixtures():
     payload = normalise.build_payload(
         _state["fixtures"], now,
         stale=_state["stale"] or _state["data_check"] is not None or bool(too_old),
-        data_check=_state["data_check"], sources=_sources())
+        data_check=_state["data_check"], sources=_sources(), extras=_state["extras"])
     return jsonify(payload)
 
 
@@ -217,6 +233,11 @@ def healthz():
         "team": config.TEAM_NAME,
         "euro_tier": config.EURO_TIER,
         "crests": _state["crests"],
+        **({"dormant_mode": True,
+            "extras": {"standings": sorted((_state["extras"] or {}).get("standings", {})),
+                       "ranking": (_state["extras"] or {}).get("ranking"),
+                       "last_error": (_state["extras"] or {}).get("last_error")}}
+           if config.DORMANT_MODE else {}),
     })
 
 

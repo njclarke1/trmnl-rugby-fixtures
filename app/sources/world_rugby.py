@@ -147,6 +147,7 @@ def to_fixture(m: dict) -> Fixture:
     event = (m.get("events") or [{}])[0] or {}
     label = (m.get("competition") or event.get("label") or "").strip()
     end = (event.get("end") or {}).get("label") or ""
+    begin = (event.get("start") or {}).get("label") or ""
     return Fixture(
         id=synthetic_id("wr", m["matchId"]),
         kickoff_utc=kick,
@@ -161,6 +162,7 @@ def to_fixture(m: dict) -> Fixture:
         extra={
             "wr_match_id": m["matchId"],
             "wr_event_id": event.get("id") or "",
+            "wr_event_start": begin,
             "wr_event_end": end,
             "competition_label": label,
             "phase": (m.get("eventPhase") or "").strip(),
@@ -209,6 +211,8 @@ def _final_round_placeholders(fixtures: list[Fixture], now: dt.datetime) -> list
             extra={"placeholder": True, "phase": "Finals weekend",
                    "competition_label": ref.extra.get("competition_label", ""),
                    "wr_event_id": ref.extra.get("wr_event_id", ""),
+                   "wr_event_start": ref.extra.get("wr_event_start", ""),
+                   "wr_event_end": ref.extra.get("wr_event_end", ""),
                    "span": f"{start.day}–{end.day} {end:%b}" if start.month == end.month
                            else f"{start.day} {start:%b}–{end.day} {end:%b}",
                    "hold_until": hold.astimezone(dt.timezone.utc).isoformat()},

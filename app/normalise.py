@@ -6,7 +6,7 @@ only: no arithmetic, no date parsing (LaraPaper's `"now" | date` is unreliable).
 import datetime as dt
 from zoneinfo import ZoneInfo
 
-from . import broadcast, config, crests, rounds
+from . import broadcast, config, crests, dormant, rounds
 from .model import Fixture, Team, is_ours
 from .shortnames import badge, display_name, initials, is_long, rail_name
 
@@ -56,13 +56,14 @@ def _venue(fx: Fixture) -> str:
     return fx.venue or "Venue TBC"
 
 
-def _team(t: Team, ours: bool) -> dict:
+def _team(t: Team, ours: bool, abbr: str = "") -> dict:
     return {
         "name": t.name,
         "display": display_name(t.name),
         "short": rail_name(t.name),
         "long": is_long(t.name),
-        "initials": initials(t.name),
+        # Source abbreviation (World Rugby: "NZL") beats derived initials.
+        "initials": abbr or initials(t.name),
         "ours": ours,
         # Set only once the processed 1-bit oval exists; else the template shows
         # initials. `crest_inv` is the white-on-black variant (mock `.crest.inv`).
@@ -75,9 +76,20 @@ def _is_home(fx: Fixture) -> bool:
     return is_ours(fx.home.name)
 
 
+def _venue_tag(fx: Fixture, home: bool) -> str:
+    """Home/Away from team order; Neutral when the source gives a venue country
+    that isn't the listed home side's (Fiji v England at Liverpool; every RWC
+    game in Australia). Only national-side adapters set `venue_country`."""
+    country = (fx.extra.get("venue_country") or "").casefold()
+    if country and country != fx.home.name.casefold():
+        return "Neutral"
+    return "Home" if home else "Away"
+
+
 def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
                   stale: bool = False, data_check: str | None = None,
-                  sources: dict | None = None, overrides: dict | None = None) -> dict:
+                  sources: dict | None = None, overrides: dict | None = None,
+                  extras: dict | None = None) -> dict:
     now = now or dt.datetime.now(dt.timezone.utc)
     now_local = now.astimezone(LONDON)
     round_of = rounds.label_rounds(fixtures)
@@ -96,6 +108,15 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         "next": None,
         "on_deck": [],
     }
+    if config.DORMANT_MODE:
+        held = bool(upcoming) and not upcoming[0].all_day and now >= upcoming[0].kickoff_utc
+        payload.update(dormant.resolve(fixtures, upcoming, now, round_of, extras, held))
+        if upcoming and payload["display_mode"] == "fixture":
+            win = {f.id for f in dormant.window_of(fixtures, upcoming[0])}
+            upcoming = [upcoming[0]] + [f for f in upcoming[1:] if f.id in win]
+        else:
+            upcoming = upcoming[:1]                      # dormant: no rail
+
     if not upcoming:
         return payload
 
@@ -112,9 +133,9 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         "is_friendly": key == "friendly",
         "round": round_of.get(fx.id, ""),
         "is_home": home,
-        "venue_tag": "Home" if home else "Away",
-        "home": _team(fx.home, home),
-        "away": _team(fx.away, not home),
+        "venue_tag": _venue_tag(fx, home),
+        "home": _team(fx.home, home, fx.extra.get("home_abbr", "")),
+        "away": _team(fx.away, not home, fx.extra.get("away_abbr", "")),
         "day": k.strftime("%A"),
         "date": _d(k),
         "time": "TBC" if fx.all_day else k.strftime("%H:%M"),
@@ -126,6 +147,11 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         "source": fx.source,
         "broadcast": broadcast.resolve(fx, key, overrides),
     }
+    if fx.extra.get("placeholder"):
+        # Derived final round (e.g. NC finals weekend): day and opponent unknown.
+        payload["next"].update(placeholder=True, opponent_tbc=True, day="Finals weekend",
+                               venue_tag="TBC",
+                               date=fx.extra.get("span") or payload["next"]["date"])
 
     for fx in upcoming[1:1 + config.ON_DECK_COUNT]:
         key, comp, comp_short = rounds.comp_info(fx.competition_raw)
@@ -140,9 +166,11 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         else:
             chan = "TBC"
         time = "TBC" if fx.all_day else k.strftime("%H:%M") + (" TBC" if provisional else "")
+        when = (fx.extra["span"] if fx.extra.get("placeholder") and fx.extra.get("span")
+                else f"{k:%a} {_d(k)} · {time}")
         payload["on_deck"].append({
             "id": fx.id,
-            "when": f"{k:%a} {_d(k)} · {time}",
+            "when": when,
             "tbc": fx.all_day or provisional,
             "opponent": rail_name((fx.away if home else fx.home).name),
             "ha": "H" if home else "A",

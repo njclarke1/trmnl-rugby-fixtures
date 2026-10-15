@@ -46,6 +46,11 @@ def _label(key: str, n: int) -> str:
         return PREM_KO[i] if i < len(PREM_KO) else ""
     if key == "friendly":
         return "Exhibition"
+    if key in config.NATIONAL_ROUNDS:
+        # Six Nations / Nations Championship: every side plays every round.
+        if n <= config.NATIONAL_ROUNDS[key]:
+            return f"Round {n}"
+        return "Finals weekend" if key == "nations" else ""
     return ""
 
 
@@ -57,5 +62,7 @@ def label_rounds(fixtures: list[Fixture]) -> dict[int, str]:
     for fx in sorted(fixtures, key=lambda f: f.kickoff_utc):
         key = comp_info(fx.competition_raw)[0]
         c = counters[(fx.season_id, key)] = counters.get((fx.season_id, key), 0) + 1
-        out[fx.id] = _label(key, c)
+        # A source-given stage ("Pool F", a derived "Finals weekend") wins over
+        # the ordinal. Only national-side adapters set it; the club feed never does.
+        out[fx.id] = fx.extra.get("phase") or _label(key, c)
     return out

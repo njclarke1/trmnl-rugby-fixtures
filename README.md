@@ -11,8 +11,9 @@ One codebase serves one stack per team:
 | England | 3460 | `trmnl-england-api` | `world_rugby` (World Rugby data API) |
 
 **Status:** Bristol: Phases 2–5 done (sidecar, rights map, crests, `full.liquid`); Phase 6 (hardening) to come.
-England: Phase 2 done (World Rugby adapter + dispatcher, stub-tested). Dormant mode, the England rights map,
-the plugin branch and the 3460 deployment are still to come — **do not deploy the England stack yet**.
+England: Phases 2–3 done (World Rugby adapter, dispatcher, dormant mode with standings and ranking).
+The England rights map, the plugin branch and the 3460 deployment are still to come — **do not deploy
+the England stack yet**.
 
 ## Architecture
 
@@ -114,12 +115,36 @@ TheSportsDB premium.
    for the whole weekend. It assumes the final round fills the last 3 days of the
    competition; the real fixture replaces it as soon as World Rugby lists it.
 3. **No round numbers for Six Nations / Nations Championship** (World Rugby gives "Match 15").
-   RWC carries its phase ("Pool F"). Round labels for national competitions arrive in Phase 3.
-4. **No crests:** World Rugby serves no logo URLs. Ovals show the team abbreviation.
-5. **Venue string:** "Stadium, City", with the city dropped when it is already in the name
+   They are derived from the order of our fixtures (every side plays every round): Six Nations
+   Round 1–5; NC Round 1–6 (July = 1–3, November = 4–6), then *Finals weekend*. RWC uses
+   World Rugby's own phase ("Pool F"). A re-staged postponement would shift the ordinals.
+4. **Venue tag "Neutral"** when World Rugby's venue country isn't the listed home side
+   (Fiji v England at Liverpool; every RWC game). The finals placeholder's tag is "TBC".
+5. **No crests:** World Rugby serves no logo URLs. Ovals show the team abbreviation.
+6. **Venue string:** "Stadium, City", with the city dropped when it is already in the name
    (*Brisbane Stadium*) and dual names trimmed ("Brisbane | Meeanjin" → Brisbane).
-6. **Event status is unreliable** (the finished 2026 Six Nations still says "Scheduled");
+7. **Event status is unreliable** (the finished 2026 Six Nations still says "Scheduled");
    only per-match status is used.
+8. **Dormant mode** (`DORMANT_MODE=1`): `display_mode` is `fixture` when the next fixture is
+   within `IMMINENT_DAYS` (21, counted in London calendar days) or kicked off and held, else
+   `dormant`, with `dormant.state`:
+   - `between_windows`: next window's competition, date range, match count, opener, countdown.
+   - `awaiting_draw`: inside a competition we are still in with no fixture listed (RWC after
+     the pool). **If England are knocked out it still reads "Awaiting the draw" until the
+     competition's final date** (~4 weeks, once every 4 years): elimination is not detected.
+   - `none_scheduled`: nothing listed.
+   The rail shows the rest of the *current window* only, never the next one.
+9. **Standings follow the competition of the last result.** World Rugby first, ESPN as
+   fallback (World Rugby's Six Nations tables are empty). A table is accepted only if our
+   played/won/drawn/lost match our own results in that competition, so a stale or
+   next-season table is refused (shown as no standing, reason in `/healthz`). ESPN only
+   serves the *current* table, so a finished competition's table is frozen once seen;
+   if it was never seen before the source moved on, no standing is shown.
+10. **Nations Championship final placing is derived**: table position *p* before finals
+   weekend, then win → 2*p*−1, loss → 2*p* (1st v 1st is the final, 2nd v 2nd for 3rd…).
+   Relies on the table being captured between round 6 and the finals (any refresh in that
+   week does it). A drawn finals game shows "*n*th=" because the tie-break is unknown.
+11. **No 2027 Nations Championship** in any source as of 15 Oct 2026; nothing assumed.
 
 ## Broadcast
 
@@ -256,6 +281,15 @@ Set-up:
 | `CREST_THRESHOLD` | `0` | `0` = Otsu per crest; `1–254` fixed |
 | `PUBLIC_BASE_URL` | `http://192.168.68.111:3459` | crest URLs (Phase 4) |
 | `COMP_LABELS`, `TEAM_DISPLAY`, `TEAM_RAIL` | — | JSON overrides for labels and names |
+| `SOURCE_STUB` | `0` | `1` = any adapter reads `tests/fixtures/` (enables `?now=`) |
+| `WR_TEAM_ID` | — | World Rugby team id; England men = `34`. Required for `world_rugby` |
+| `WR_FINAL_ROUND_COMPS` | `Nations Championship` | competitions whose final round every team plays |
+| `WR_FINAL_ROUND_SPAN_DAYS` | `3` | length of that final round (Fri–Sun) |
+| `DORMANT_MODE` | `0` | `1` adds `display_mode` + `dormant` to the payload (England) |
+| `IMMINENT_DAYS` | `21` | next fixture further than this (London days) → dormant |
+| `WINDOW_GAP_DAYS` | `21` | fixtures closer than this form one window |
+| `EXTRAS_TTL` | `86400` | standings / ranking refresh |
+| `DORMANT_SPINE` | `<TEAM_NAME> Rugby` | spine text on the dormant screen |
 
 ## Deploy (Portainer git stack)
 
