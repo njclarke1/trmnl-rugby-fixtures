@@ -145,16 +145,20 @@ Set-up:
    - `data_stale_minutes: 15`;
    - markup: paste `plugin/full.liquid`.
 2. The device's width and height must be set by hand to **960 × 540**.
-3. To force an immediate poll and render:
+3. To force an immediate poll and render, or to force a demo state, use tinker. `polling_url` and `updateDataPayload()` are LaraPaper's own `Plugin` model, and the plugin's `name` is whatever you called it (here `trmnl-bristol`):
    ```bash
    docker exec -it larapaper php artisan tinker
    ```
    ```php
-   $p = App\Models\Plugin::where('name', 'Rugby Fixtures')->first(); $p->updateDataPayload();
-   app(App\Actions\Api\RunDeviceDisplayCycle::class)->handle(App\Models\Device::find(1));
+   $p = App\Models\Plugin::where('name', 'trmnl-bristol')->first();
+   $d = App\Models\Device::find(1);
+   $show = function ($path) use ($p, $d) { $p->polling_url = "http://192.168.68.111:3459$path"; $p->save(); $p->updateDataPayload(); app(App\Actions\Api\RunDeviceDisplayCycle::class)->handle($d); };
+   $show('/fixtures');               // live
+   $show('/demo/available.json');    // then any state below; finish with $show('/fixtures')
    ```
+   If the device's playlist rotates through several plugins, the display cycle may land on another one. Keep this plugin current while testing.
 
-**Forcing each state on the panel.** Point the plugin's polling URL at `http://192.168.68.111:3459/demo/<state>.json`, poll and render, then point it back at `/fixtures`. These are canned payloads built from the bundled real responses, so crests appear once they are cached. `/demo` lists the states:
+**Forcing each state on the panel.** Use `$show('/demo/<state>.json')` above, or edit the polling URL in the UI. These are canned payloads built from the bundled real responses, so crests appear once they are cached. `/demo` lists the states:
 
 | State | What it shows |
 |---|---|
@@ -169,6 +173,8 @@ Set-up:
 | `friendly` | an exhibition match |
 | `data_check` | the DATA CHECK tag |
 | `empty` | the idle screen |
+
+**Always finish with `$show('/fixtures')`.** A demo URL left in place freezes the panel on canned data.
 
 **Preview without the panel:** `python plugin/demo/render_demo.py` writes HTML (and PNGs if Playwright is installed) for every state into `plugin/demo/out/`. Chromium approximates the renderer; the panel has the final say.
 
