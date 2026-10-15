@@ -74,7 +74,7 @@ def _is_home(fx: Fixture) -> bool:
 
 def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
                   stale: bool = False, data_check: str | None = None,
-                  sources: dict | None = None) -> dict:
+                  sources: dict | None = None, overrides: dict | None = None) -> dict:
     now = now or dt.datetime.now(dt.timezone.utc)
     now_local = now.astimezone(LONDON)
     round_of = rounds.label_rounds(fixtures)
@@ -121,7 +121,7 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         "countdown": _countdown(fx, now),
         "kicked_off": not fx.all_day and now >= fx.kickoff_utc,
         "source": fx.source,
-        "broadcast": broadcast.resolve(fx, key),
+        "broadcast": broadcast.resolve(fx, key, overrides),
     }
 
     for fx in upcoming[1:1 + config.ON_DECK_COUNT]:
@@ -129,7 +129,7 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         k = fx.kickoff_utc.astimezone(LONDON)
         home = _is_home(fx)
         provisional = is_provisional(fx, now)
-        b = broadcast.resolve(fx, key)
+        b = broadcast.resolve(fx, key, overrides)
         if b["state"] in ("available", "unavailable"):
             chan = b["primary_short"]
         elif b["state"] == "none":

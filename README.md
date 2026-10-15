@@ -10,10 +10,7 @@ One codebase serves one stack per team:
 | Bristol Bears | 3459 | `trmnl-bristol-api` | `club_wp` (club website feed) |
 | England | 3460 | `trmnl-england-api` | *later* |
 
-**Status:** Phases 2–4 are done: sidecar core, broadcast rights map and crests. Still to come:
-
-- Phase 5: `full.liquid`.
-- Phase 6: hardening.
+**Status:** Phases 2–5 are done: sidecar core, broadcast rights map, crests and the `full.liquid` plugin. Phase 6 (hardening) is still to come.
 
 ## Architecture
 
@@ -131,6 +128,50 @@ Two variants are produced:
 
 Club crests are trademarks. The cache is git-ignored, and the tests use synthetic images.
 
+## Plugin (LaraPaper)
+
+`plugin/full.liquid` is built from mock panels 1–2. What marks it as rugby rather than football:
+
+- a black left spine carrying the competition, the round and the team badge (football has a top bar);
+- oval crests, with your side's crest inverted;
+- an H goalpost divider between the two teams.
+
+The rest follows the football screen on purpose: venue strip, kickoff panel, countdown chip, the four-state *Watch on* band, and the next-up rail with filled (on your TV) or hollow chips. The strip also shows a **DATA CHECK** tag when the feed has changed shape, or **CACHED** when it is serving last-good data. When there are no fixtures, an idle screen takes over.
+
+Set-up:
+
+1. In LaraPaper, create a polling plugin:
+   - polling URL `http://192.168.68.111:3459/fixtures`, method GET;
+   - `data_stale_minutes: 15`;
+   - markup: paste `plugin/full.liquid`.
+2. The device's width and height must be set by hand to **960 × 540**.
+3. To force an immediate poll and render:
+   ```bash
+   docker exec -it larapaper php artisan tinker
+   ```
+   ```php
+   $p = App\Models\Plugin::where('name', 'Rugby Fixtures')->first(); $p->updateDataPayload();
+   app(App\Actions\Api\RunDeviceDisplayCycle::class)->handle(App\Models\Device::find(1));
+   ```
+
+**Forcing each state on the panel.** Point the plugin's polling URL at `http://192.168.68.111:3459/demo/<state>.json`, poll and render, then point it back at `/fixtures`. These are canned payloads built from the bundled real responses, so crests appear once they are cached. `/demo` lists the states:
+
+| State | What it shows |
+|---|---|
+| `available` | the TNT state |
+| `unavailable` | Champions Cup / Premier Sports |
+| `tbc` | PREM Cup |
+| `none` | a game confirmed as not televised |
+| `itv` | an override for an ITV free-to-air pick |
+| `provisional` | a TBC kickoff in the rail |
+| `long_name` | Newcastle Red Bulls (tests long team names) |
+| `kicked_off` | a match in its hold window after kickoff |
+| `friendly` | an exhibition match |
+| `data_check` | the DATA CHECK tag |
+| `empty` | the idle screen |
+
+**Preview without the panel:** `python plugin/demo/render_demo.py` writes HTML (and PNGs if Playwright is installed) for every state into `plugin/demo/out/`. Chromium approximates the renderer; the panel has the final say.
+
 ## Maintenance
 
 | When | What |
@@ -181,7 +222,7 @@ Never run `docker compose` by hand in `/data/compose/<id>`. It starts a separate
 ## Tests
 
 ```bash
-pip install -r requirements.txt pytest
+pip install -r requirements.txt pytest python-liquid
 python -m pytest -q
 ```
 
@@ -198,4 +239,5 @@ The tests are stub-driven and use the real Phase 1 responses. They cover:
 - every shape check
 - outage → last good → recovery, including a restart mid-outage
 - all four broadcast states, overrides, rights expiry, and owned-channel filtering
-- crests: polarity, pale crests, mid-tones, the oval mask, caching, fallback to initials, and route safety.
+- crests: polarity, pale crests, mid-tones, the oval mask, caching, fallback to initials, and route safety
+- `full.liquid` rendered against every demo state, plus the `/demo` endpoints.

@@ -1,0 +1,214 @@
+{% comment %}
+  trmnl-rugby-fixtures: full layout, 960×540 (M5Stack PaperS3).
+  Design: rugby-render-mock.html panels 1–2. Rugby is told apart from football
+  at a distance by the black LEFT spine (football: top bar), OVAL crests and the
+  H goalpost divider.
+  Rules: presentation only (no date maths: the sidecar pre-formats every
+  string); self-contained <style> (TRMNL design-system classes give a white
+  screen); flex only (wkhtmltoimage has no CSS Grid); min-width:0 on every
+  shrinking flex child.
+{% endcomment %}
+<style>
+  .rg *{box-sizing:border-box;margin:0;padding:0}
+  .rg{width:960px;height:540px;background:#fff;color:#000;display:flex;overflow:hidden;
+    font-family:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;font-kerning:none}
+
+  .rg .spine{flex:0 0 70px;width:70px;background:#000;color:#fff;display:flex;align-items:center;
+    justify-content:center;position:relative}
+  .rg .spine-text{transform:rotate(180deg);writing-mode:vertical-rl;font-size:23px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+  .rg .spine-round{position:absolute;top:14px;left:2px;right:2px;text-align:center;font-size:10px;
+    font-weight:700;line-height:1.25;letter-spacing:.02em;text-transform:uppercase;opacity:.9}
+  .rg .spine-badge{position:absolute;bottom:14px;left:50%;margin-left:-21px;width:42px;height:42px;
+    border:2.5px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;letter-spacing:.02em}
+
+  .rg .body{flex:1 1 auto;display:flex;flex-direction:column;min-width:0}
+
+  .rg .strip{flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 22px;border-bottom:3px solid #000}
+  .rg .strip-venue{font-size:16px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;min-width:0}
+  .rg .strip-tags{display:flex;align-items:center;flex:0 0 auto;margin-left:16px}
+  .rg .strip-tag{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;
+    border:2px solid #000;padding:3px 10px;margin-left:8px}
+  .rg .strip-tag.alert{background:#000;color:#fff}
+
+  .rg .main{flex:1 1 auto;display:flex;min-height:0}
+  .rg .fixture{flex:1 1 auto;padding:18px 22px;display:flex;flex-direction:column;
+    justify-content:center;min-width:0}
+  .rg .side{display:flex;align-items:center;min-width:0}
+  .rg .crest{width:96px;height:74px;flex:0 0 96px;border:3px solid #000;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;
+    letter-spacing:.01em;overflow:hidden}
+  .rg .crest img{width:90px;height:68px;display:block}
+  .rg .crest.inv{background:#000;color:#fff}
+  .rg .club{margin-left:18px;font-size:40px;font-weight:700;line-height:1.02;letter-spacing:-.015em;
+    text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rg .club.long{font-size:31px}
+
+  .rg .posts{display:flex;align-items:center;padding-left:28px;margin:10px 0}
+  .rg .goal{width:40px;height:30px;flex:0 0 40px;position:relative;
+    border-left:4px solid #000;border-right:4px solid #000}
+  .rg .goal-bar{position:absolute;left:-4px;right:-4px;top:9px;height:4px;background:#000}
+  .rg .posts-rule{height:2px;background:#000;flex:1 1 auto;margin-left:12px}
+
+  .rg .kick{flex:0 0 268px;border-left:3px solid #000;padding:16px 20px;display:flex;
+    flex-direction:column;justify-content:center}
+  .rg .kick-day{font-size:17px;letter-spacing:.26em;text-transform:uppercase;font-weight:700}
+  .rg .kick-date{margin-top:2px;font-size:56px;font-weight:700;line-height:.94;letter-spacing:-.03em;
+    white-space:nowrap}
+  .rg .kick-time{margin-top:6px;font-size:46px;font-weight:700;line-height:1;letter-spacing:-.02em;
+    display:flex;align-items:center;white-space:nowrap}
+  .rg .tbc-chip{margin-left:10px;font-size:14px;font-weight:700;letter-spacing:.16em;
+    border:2.5px solid #000;padding:3px 7px;line-height:1}
+  .rg .countdown{display:inline-block;margin-top:12px;padding:4px 10px;font-size:14px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;background:#000;color:#fff}
+
+  .rg .tv{flex:0 0 56px;border-top:3px solid #000;display:flex;align-items:stretch}
+  .rg .tv-label,.rg .rail-label{flex:0 0 84px;display:flex;align-items:center;justify-content:center;
+    text-align:center;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    border-right:2px solid #000;line-height:1.2}
+  .rg .tv-body{flex:1 1 auto;min-width:0;display:flex;align-items:center;padding:0 16px}
+  .rg .tv-primary{background:#000;color:#fff;font-size:19px;font-weight:700;padding:5px 11px;
+    white-space:nowrap;flex:0 0 auto;margin-right:12px}
+  .rg .tv-primary.out{background:#fff;color:#000;border:2.5px solid #000;padding:3px 9px}
+  .rg .tv-note{font-size:19px;font-weight:700;white-space:nowrap;flex:0 0 auto;margin-right:12px}
+  .rg .tv-also{font-size:14px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .rg .tv-status{flex:0 0 auto;border-left:2px solid #000;padding:0 16px;display:flex;
+    align-items:center;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    text-align:center;line-height:1.25}
+
+  .rg .rail{flex:0 0 84px;border-top:2px solid #000;display:flex;align-items:stretch}
+  .rg .rail-item{flex:1 1 0;min-width:0;padding:9px 13px;display:flex;flex-direction:column;
+    justify-content:center;border-right:2px solid #000}
+  .rg .rail-item:last-child{border-right:0}
+  .rg .rail-item.wide{flex:1 1 100%}
+  .rg .rail-when{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rg .rail-opp{margin-top:2px;font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis}
+  .rg .rail-comp{margin-top:2px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rg .chip{display:inline-block;padding:1px 5px;background:#000;color:#fff;font-size:10px;
+    font-weight:700;letter-spacing:.1em;vertical-align:2px}
+  .rg .chip.out{background:#fff;color:#000;border:1.5px solid #000;padding:0 4px}
+
+  .rg .idle{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;padding:22px 26px;
+    min-height:0}
+  .rg .idle-head{font-size:15px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+  .rg .idle-title{margin-top:12px;font-size:44px;font-weight:700;line-height:1.02;letter-spacing:-.02em;
+    text-transform:uppercase}
+  .rg .idle-sub{margin-top:12px;font-size:20px;line-height:1.4;max-width:620px}
+</style>
+
+<div class="rg">
+{% if next %}
+  <div class="spine">
+    {% if next.round != "" %}<div class="spine-round">{{ next.round }}</div>{% endif %}
+    <div class="spine-text">{{ next.competition }}</div>
+    <div class="spine-badge">{{ team_badge }}</div>
+  </div>
+  <div class="body">
+    <div class="strip">
+      <span class="strip-venue">{{ next.venue }}</span>
+      <span class="strip-tags">
+        {% if data_check %}<span class="strip-tag alert">Data check</span>{% elsif stale %}<span class="strip-tag">Cached</span>{% endif %}
+        <span class="strip-tag">{{ next.venue_tag }}</span>
+      </span>
+    </div>
+
+    <div class="main">
+      <div class="fixture">
+        {% assign sides = "home,away" | split: "," %}
+        {% for s in sides %}
+          {% if s == "home" %}{% assign t = next.home %}{% else %}{% assign t = next.away %}{% endif %}
+          <div class="side">
+            {% if t.ours %}
+              <div class="crest inv">{% if t.crest_inv %}<img src="{{ t.crest_inv }}">{% else %}{{ t.initials }}{% endif %}</div>
+            {% else %}
+              <div class="crest">{% if t.crest %}<img src="{{ t.crest }}">{% else %}{{ t.initials }}{% endif %}</div>
+            {% endif %}
+            <div class="club{% if t.long %} long{% endif %}">{{ t.display }}</div>
+          </div>
+          {% if s == "home" %}
+          <div class="posts"><div class="goal"><div class="goal-bar"></div></div><div class="posts-rule"></div></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="kick">
+        <div class="kick-day">{{ next.day }}</div>
+        <div class="kick-date">{{ next.date }}</div>
+        <div class="kick-time">{{ next.time }}{% if next.provisional %}<span class="tbc-chip">TBC</span>{% endif %}</div>
+        <div><span class="countdown">{{ next.countdown }}</span></div>
+      </div>
+    </div>
+
+    {% assign b = next.broadcast %}
+    <div class="tv">
+      <div class="tv-label">Watch<br>on</div>
+      <div class="tv-body">
+        {% if b.state == "available" %}
+          <span class="tv-primary">{{ b.primary }}</span>
+        {% elsif b.state == "unavailable" %}
+          <span class="tv-primary out">{{ b.primary }}</span>
+        {% elsif b.state == "none" %}
+          <span class="tv-note">Not televised</span>
+        {% else %}
+          <span class="tv-note">To be confirmed</span>
+        {% endif %}
+        {% if b.state != "none" %}<span class="tv-also">{{ b.also }}</span>{% endif %}
+      </div>
+      <div class="tv-status">
+        {% if b.state == "available" %}You have<br>this{% elsif b.state == "unavailable" %}Not on<br>your TV{% elsif b.state == "none" %}No<br>coverage{% else %}TBC{% endif %}
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="rail-label">Next<br>up</div>
+      {% if on_deck.size > 0 %}
+        {% for d in on_deck %}
+        <div class="rail-item">
+          <div class="rail-when">{{ d.when }}</div>
+          <div class="rail-opp">{{ d.opponent }} <span class="chip{% unless d.owned %} out{% endunless %}">{{ d.ha }}</span></div>
+          <div class="rail-comp">{{ d.competition_short }}{% if d.channel_short %} · {{ d.channel_short }}{% endif %}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="rail-item wide">
+          <div class="rail-when">No further fixtures published</div>
+          <div class="rail-comp">Refreshed {{ generated_display }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% else %}
+  <div class="spine">
+    <div class="spine-round">Off<br>season</div>
+    <div class="spine-text">{{ team }}</div>
+    <div class="spine-badge">{{ team_badge }}</div>
+  </div>
+  <div class="body">
+    <div class="strip">
+      <span class="strip-venue">No fixture currently scheduled</span>
+      <span class="strip-tags">
+        {% if data_check %}<span class="strip-tag alert">Data check</span>{% elsif stale %}<span class="strip-tag">Cached</span>{% endif %}
+        <span class="strip-tag">Idle</span>
+      </span>
+    </div>
+    <div class="idle">
+      <div class="idle-head">Next fixture</div>
+      <div class="idle-title">To be announced</div>
+      <div class="idle-sub">This screen updates as soon as the club publishes the next fixtures.</div>
+    </div>
+    <div class="rail">
+      <div class="rail-label">Data</div>
+      <div class="rail-item wide">
+        <div class="rail-when">Refreshed {{ generated_display }}{% if stale %} · cached{% endif %}</div>
+        <div class="rail-comp">Fixtures: {{ sources.fixtures }} · Broadcast: {{ sources.broadcast }}{% if data_check_reason %} · {{ data_check_reason }}{% endif %}</div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+</div>

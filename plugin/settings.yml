@@ -1,0 +1,18 @@
+---
+name: Rugby Fixtures
+author: njclarke1
+description: >
+  Next fixture for your rugby club across every competition, with oval
+  crests, kickoff, venue and the UK TV channel filtered against the channels
+  you hold. A next-up rail shows the following three fixtures. Requires the
+  trmnl-rugby-fixtures sidecar (one stack per team).
+strategy: polling
+polling_verb: get
+polling_url: "{{ api_base }}/fixtures"
+data_stale_minutes: 15
+custom_fields:
+  - keyname: api_base
+    name: Sidecar API base URL
+    field_type: string
+    description: "e.g. http://192.168.68.111:3459 — the trmnl-bristol-api container"
+    default: "http://192.168.68.111:3459"

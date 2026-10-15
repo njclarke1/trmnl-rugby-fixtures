@@ -69,8 +69,8 @@ def _result(state: str, channels: list[str], note: str | None, confidence: str) 
     }
 
 
-def resolve(fx: Fixture, comp_key: str) -> dict:
-    ov = OVERRIDES.get(str(fx.id))
+def resolve(fx: Fixture, comp_key: str, overrides: dict | None = None) -> dict:
+    ov = (OVERRIDES if overrides is None else overrides).get(str(fx.id))
     if ov is not None:
         chans = list(ov.get("channels") or [])
         if not chans:

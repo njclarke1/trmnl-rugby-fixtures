@@ -11,3 +11,6 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+
+# Demo renders (python plugin/demo/render_demo.py)
+plugin/demo/out/

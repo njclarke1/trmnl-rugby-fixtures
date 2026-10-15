@@ -19,7 +19,7 @@ import time
 
 from flask import Flask, abort, jsonify, request, send_file
 
-from . import config, crests, normalise
+from . import config, crests, demo, normalise
 from .errors import ShapeError, SourceUnavailable
 from .model import Fixture
 from .sources import club_wp
@@ -146,6 +146,21 @@ def fixtures():
         stale=_state["stale"] or _state["data_check"] is not None or bool(too_old),
         data_check=_state["data_check"], sources=_sources())
     return jsonify(payload)
+
+
+@app.get("/demo/<state>.json")
+def demo_state(state: str):
+    """Canned payloads for forcing screen states on the panel (app/demo.py)."""
+    payload = demo.build(state)
+    if payload is None:
+        return jsonify({"error": "unknown state", "states": sorted(demo.STATES)}), 404
+    return jsonify(payload)
+
+
+@app.get("/demo")
+def demo_index():
+    return jsonify({"states": sorted(demo.STATES),
+                    "usage": "point the plugin's polling URL at /demo/<state>.json"})
 
 
 @app.get("/crest/<name>.png")
