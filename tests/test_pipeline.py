@@ -183,7 +183,7 @@ def test_rounds_current_season():
     by = {f.id: lab[f.id] for f in fxs}
     assert by[293322] == "Pool · R1"                   # Stormers
     assert by[294926] == "Round 4"                     # Exeter, PREM
-    assert by[294862] == "Round 3"                     # Sale, PREM Cup
+    assert by[294862] == "Pool game 3"                 # Sale, PREM Cup
     prem = sorted((f for f in fxs if f.competition_raw == "Gallagher Premiership"),
                   key=lambda f: f.kickoff_utc)
     assert len(prem) == 18 and lab[prem[-1].id] == "Round 18"
@@ -303,6 +303,7 @@ def test_exhibition_is_friendly(both_seasons):
     n = p["next"]
     assert (n["competition"], n["round"], n["is_friendly"]) == ("Friendly", "Exhibition", True)
     assert n["away"]["name"] == "Argentina XV" and n["broadcast"]["state"] == "tbc"
+    assert n["broadcast"]["also"] == "Friendly: check the club's own stream"
 
 
 # --- seasons, rollover, empty ------------------------------------------------------
@@ -324,7 +325,7 @@ def test_rollover_summer_shows_next_season():
     assert set(res.counts) == {"202501", "202601"}
     n = normalise.build_payload(res.fixtures, now)["next"]
     assert n["away"]["name"] == "Gloucester Rugby" and n["date"] == "5 Sep"
-    assert n["round"] == "Round 1"
+    assert n["round"] == "Pool game 1"
 
 
 def test_empty_season():
@@ -407,7 +408,7 @@ def _get_fixtures(client):
 def test_outage_serves_last_good_then_recovers(client, monkeypatch):
     ok = _get_fixtures(client).get_json()
     assert ok["stale"] is False and ok["next"]["id"] == 293322
-    assert ok["sources"] == {"fixtures": "stub", "enrich": "club-json", "broadcast": "pending"}
+    assert ok["sources"] == {"fixtures": "stub", "enrich": "club-json", "broadcast": "rights-map"}
 
     def down(kind, season):
         raise SourceUnavailable("connection reset")
@@ -464,8 +465,3 @@ def test_synthetic_ids_negative_and_stable():
     assert all(i < 0 for i in ids)
     expected = -((zlib.crc32(b"a|b") % 10 ** 9) + 1)
     assert synthetic_id("a", "b") == synthetic_id("a", "b") == expected
-
-
-def test_broadcast_placeholder_until_phase3():
-    n = normalise.build_payload(_fetch().fixtures, NOW)["next"]
-    assert n["broadcast"]["state"] == "tbc"

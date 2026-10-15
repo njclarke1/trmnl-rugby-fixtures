@@ -106,7 +106,7 @@ def _sources() -> dict:
     return {
         "fixtures": "stub" if config.FIXTURES_SOURCE == "stub" else "club-ical",
         "enrich": {True: "club-json", False: "failed", None: "off"}[_state["enrich_ok"]],
-        "broadcast": "pending",                         # Phase 3: rights map
+        "broadcast": "rights-map",
     }
 
 

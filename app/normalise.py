@@ -130,11 +130,11 @@ def build_payload(fixtures: list[Fixture], now: dt.datetime | None = None, *,
         provisional = is_provisional(fx, now)
         b = broadcast.resolve(fx, key)
         if b["state"] in ("available", "unavailable"):
-            chan = b.get("primary_short") or b["primary"]
-        elif b["state"] == "tbc":
-            chan = "TBC"
+            chan = b["primary_short"]
+        elif b["state"] == "none":
+            chan = "No TV"
         else:
-            chan = None
+            chan = "TBC"
         time = "TBC" if fx.all_day else k.strftime("%H:%M") + (" TBC" if provisional else "")
         payload["on_deck"].append({
             "id": fx.id,

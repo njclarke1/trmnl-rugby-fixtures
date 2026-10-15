@@ -10,9 +10,8 @@ One codebase serves one stack per team:
 | Bristol Bears | 3459 | `trmnl-bristol-api` | `club_wp` (club website feed) |
 | England | 3460 | `trmnl-england-api` | *later* |
 
-**Status:** Phase 2 (sidecar core) is done. Still to come:
+**Status:** Phase 2 (sidecar core) and Phase 3 (broadcast rights map) are done. Still to come:
 
-- Phase 3: broadcast rights map. Until then every fixture reports `tbc`.
 - Phase 4: crests.
 - Phase 5: `full.liquid`.
 - Phase 6: hardening.
@@ -63,7 +62,7 @@ Each limitation is listed here and in the chat summary, not just in a docstring:
 2. **No round in the feed.** Rounds are derived from the order of our fixtures within each competition this season:
    - PREM: Round 1–18, then Semi-final and Final. This relies on PREM having 10 teams and no byes.
    - Champions Cup: Pool · R1–R4, then Round of 16 through to Final.
-   - PREM Cup: Round *n*. Its knockout stage, if Bristol reach one, would show as a higher round number.
+   - PREM Cup: Pool game 1–8, then Semi-final and Final. The cup has two pools of five playing home and away over ten rounds, so each team has byes, and "Pool game *n*" is used rather than a round number.
    
    A postponed game re-staged out of order mislabels the games around it until it has been played.
 3. **PREM play-offs not yet observed in the feed.** Bristol finished 2025/26 without a play-off game: the 6 Jun 2026 game at Sale was Round 18, with 18 played. Play-off ties are expected to appear like any other fixture, but this is unverified until it happens.
@@ -76,14 +75,45 @@ Each limitation is listed here and in the chat summary, not just in a docstring:
 7. **The venue can be "TBD"**, shown as "Venue TBC". Home and away come from the fixture's team order, so a home game at a neutral ground still reads Home (e.g. Gloucester at the Principality Stadium, 17 Apr 2027).
 8. **The club is the authority.** Where aggregators disagree on a kickoff, e.g. Newcastle 26 Dec 2026 is 15:05 here and 15:00 on Sky, the club's time is used.
 9. **The hold window is time-based.** The current fixture stays up for 150 minutes after kickoff (rugby runs longer than football), even if a result is posted sooner. The countdown reads "Kicked off".
-10. **Broadcast is pending (Phase 3).** Every fixture currently reports `tbc`.
+10. **Broadcast comes from a rights map, not listings.** See [Broadcast](#broadcast):
+    - PREM is resolved as "TNT Sports". The specific TNT channel isn't known in advance, and some PREM games are on HBO Max only.
+    - ITV's free-to-air picks and televised PREM Cup games only appear once added as overrides.
+
+## Broadcast
+
+Rugby rights are sold per competition, so `app/rights.py` is a static map. Every line was checked against the rights holder's own announcement on 15 Oct 2026, and the sources are listed in the file.
+
+| Competition | UK broadcaster (2026/27) | State for this install |
+|---|---|---|
+| Gallagher PREM | TNT Sports, all 93 games, also on HBO Max. ITV simulcasts 7 games incl. the Final | `available` |
+| PREM Rugby Cup | TNT Sports shows 13 selected games | `tbc` until a game is named in an override |
+| Champions Cup | Premier Sports, all 63 games | `unavailable` (a normal state on European nights) |
+| Challenge Cup | Premier Sports, selected games | `unavailable` |
+| Friendly | — | `tbc` ("check the club's own stream") |
+
+The four states are `available`, `unavailable`, `tbc` and `none` (confirmed not televised). There is no `blackout`; that is football-only.
+
+**Rights expire on purpose.** Each entry has a `valid_until` (end of June 2027). A fixture after that date shows `tbc` ("rights not yet verified") rather than silently assuming last season's deal still applies. The Premier Sports EPCR deal ends with 2026/27.
+
+**Per-fixture overrides** live in `app/broadcast_overrides.json`, plus the env `BROADCAST_OVERRIDES` (same JSON shape; the env wins). They are keyed by the fixture `id` from `/fixtures`:
+
+```json
+{"294928": {"channels": ["ITV1", "ITVX", "TNT Sports 1"], "note": "ITV pick"}}
+```
+
+`"channels": []` marks a game as confirmed not televised. Use overrides for ITV's free-to-air PREM picks, which are announced in blocks, and for televised PREM Cup games. As of 15 Oct 2026, no Bristol game has been picked by ITV.
+
+**Unverified, so not encoded:** "Challenge Cup — selected games on the BBC". No rights-holder source was found for this.
+
+**HBO Max:** it is a separate channel family (`hbomax`). Add it to `OWNED_CHANNELS` if you have TNT through HBO Max; then HBO Max-only games are also counted as yours.
 
 ## Maintenance
 
 | When | What |
 |---|---|
 | Routine | **Nothing.** Kickoff times update themselves within 6 hours of the club editing them, and the TBC marker clears itself. |
-| Once a season (summer) | Re-verify the broadcast rights map (Phase 3) against the rights holders' own announcements. Set `EURO_TIER`. The season ID rolls over automatically on 1 July (`SEASON_CUTOVER_MONTH`), and both the current and next season are always fetched. |
+| As announced (optional) | Add ITV free-to-air picks and televised PREM Cup games involving your team to `broadcast_overrides.json`, or to `BROADCAST_OVERRIDES` in Portainer, which needs no commit. |
+| Once a season (summer) | Re-verify `app/rights.py` against the rights holders' own announcements, then move each `valid_until` forward. Until you do, next season's fixtures show `tbc`. Set `EURO_TIER`. The season ID rolls over automatically on 1 July (`SEASON_CUTOVER_MONTH`), and both the current and next season are always fetched. |
 | Panel shows DATA CHECK | The feed changed shape. Read the reason at `/healthz`; the display keeps the last good list meanwhile. |
 
 ## Configuration
@@ -100,7 +130,10 @@ Each limitation is listed here and in the chat summary, not just in a docstring:
 | `TBC_HORIZON_DAYS` | `42` | provisional-kickoff window |
 | `HOLD_PAST_KICKOFF_MIN` | `150` | |
 | `CACHE_TTL` | `21600` | 6 h |
-| `OWNED_CHANNELS` | `sky,tnt,bbc,itv,channel4,channel5,s4c` | used from Phase 3 |
+| `OWNED_CHANNELS` | `sky,tnt,bbc,itv,channel4,channel5,s4c` | channel families you have; `hbomax` and `premiersports` also exist |
+| `OWNED_LABEL` | `Sky / TNT / terrestrial` | wording for "Not in your … package" |
+| `BROADCAST_OVERRIDES` | — | per-fixture JSON, see [Broadcast](#broadcast) |
+| `PREMCUP_POOL_GAMES` | `8` | |
 | `PUBLIC_BASE_URL` | `http://192.168.68.111:3459` | crest URLs (Phase 4) |
 | `COMP_LABELS`, `TEAM_DISPLAY`, `TEAM_RAIL` | — | JSON overrides for labels and names |
 
@@ -136,4 +169,5 @@ The tests are stub-driven and use the real Phase 1 responses. They cover:
 - provisional kickoffs and friendlies
 - season rollover and an empty season
 - every shape check
-- outage → last good → recovery, including a restart mid-outage.
+- outage → last good → recovery, including a restart mid-outage
+- all four broadcast states, overrides, rights expiry, and owned-channel filtering.

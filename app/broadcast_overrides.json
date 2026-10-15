@@ -1,0 +1,8 @@
+{
+  "_readme": "Per-fixture broadcast overrides, keyed by fixture id (the club feed's gameId; it is the `id` field in /fixtures). Use for ITV free-to-air PREM picks and for televised PREM Cup games. `channels: []` means confirmed NOT televised. Merged with env BROADCAST_OVERRIDES (JSON, same shape), which wins. Keys starting with _ are ignored.",
+  "294854": {
+    "channels": ["TNT Sports", "HBO Max"],
+    "note": "PREM Cup opener, Bristol v Gloucester, 5 Sep 2026",
+    "source": "https://www.tntsports.co.uk/rugby/bristol-bears-gloucester-september_sto23319701/story.shtml"
+  }
+}

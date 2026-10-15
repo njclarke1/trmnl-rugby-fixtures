@@ -61,12 +61,13 @@ COMP_LABELS: dict[str, tuple[str, str, str]] = {
     "European Cup": _EURO.get(EURO_TIER, _EURO["champions"]),
     "Exhibition": ("friendly", "Friendly", "Friendly"),
 }
-COMP_LABELS.update({k: tuple(v) for k, v in json.loads(os.environ.get("COMP_LABELS", "{}")).items()})
+COMP_LABELS.update({k: tuple(v) for k, v in json.loads(os.environ.get("COMP_LABELS") or "{}").items()})
 
 # Round derivation (the feed carries no round). Ordinal of our fixture within
 # the competition this season → label. See app/rounds.py.
 PREM_REGULAR_ROUNDS = int(os.environ.get("PREM_REGULAR_ROUNDS", "18"))
 EURO_POOL_ROUNDS = int(os.environ.get("EURO_POOL_ROUNDS", "4"))
+PREMCUP_POOL_GAMES = int(os.environ.get("PREMCUP_POOL_GAMES", "8"))
 
 # --- provisional kickoff times ----------------------------------------------
 # The feed has no TBC flag; unconfirmed PREM kickoffs sit at a 15:00 weekend
@@ -84,9 +85,11 @@ MAX_DROP_ABS = int(os.environ.get("MAX_DROP_ABS", "3"))
 MAX_DROP_FRAC = float(os.environ.get("MAX_DROP_FRAC", "0.25"))
 MAX_UNPARSEABLE_FRAC = float(os.environ.get("MAX_UNPARSEABLE_FRAC", "0.2"))
 
-# --- owned channels (broadcast resolution arrives in Phase 3) ---------------
+# --- owned channels (app/broadcast.py, app/rights.py) ----------------------
 OWNED_CHANNELS = [c.lower() for c in _list(
     "OWNED_CHANNELS", "sky,tnt,bbc,itv,channel4,channel5,s4c")]
+# Wording for the `unavailable` band: "Not in your <OWNED_LABEL> package".
+OWNED_LABEL = os.environ.get("OWNED_LABEL", "Sky / TNT / terrestrial")
 
 # --- behaviour -------------------------------------------------------------
 TZ = os.environ.get("DISPLAY_TZ", "Europe/London")

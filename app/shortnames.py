@@ -14,7 +14,7 @@ DISPLAY = {
     "Emirates Lions": "Lions",
     "Bordeaux-Begles": "Bordeaux-Bègles",
 }
-DISPLAY.update(json.loads(os.environ.get("TEAM_DISPLAY", "{}")))
+DISPLAY.update(json.loads(os.environ.get("TEAM_DISPLAY") or "{}"))
 
 RAIL = {
     "Newcastle Red Bulls": "Newcastle",
@@ -32,7 +32,7 @@ RAIL = {
     "Stade Toulousain": "Toulouse",
     "Glasgow Warriors": "Glasgow",
 }
-RAIL.update(json.loads(os.environ.get("TEAM_RAIL", "{}")))
+RAIL.update(json.loads(os.environ.get("TEAM_RAIL") or "{}"))
 
 # Main panel (.club, 40px uppercase) steps down to .long above this length.
 LONG_NAME_THRESHOLD = 14

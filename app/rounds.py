@@ -5,8 +5,9 @@ Method: the ordinal of our fixture within a competition this season.
                After PREM_REGULAR_ROUNDS: Semi-final, then Final.
   Champions/Challenge — n ≤ EURO_POOL_ROUNDS: "Pool · Rn"; then
                Round of 16, Quarter-final, Semi-final, Final.
-  PREM Cup   — "Round n" (format not pinned down; knockouts would show as a
-               higher round number: see README).
+  PREM Cup   — two pools of five, home and away over ten rounds, so each team
+               has byes and our nth game is NOT round n: "Pool game n" for
+               n ≤ PREMCUP_POOL_GAMES (8), then Semi-final, Final.
   Friendly   — "Exhibition".
 
 Known limitation (README): a postponed game re-staged out of order shifts the
@@ -39,7 +40,10 @@ def _label(key: str, n: int) -> str:
         i = n - config.EURO_POOL_ROUNDS - 1
         return EURO_KO[i] if i < len(EURO_KO) else ""
     if key == "premcup":
-        return f"Round {n}"
+        if n <= config.PREMCUP_POOL_GAMES:
+            return f"Pool game {n}"
+        i = n - config.PREMCUP_POOL_GAMES - 1
+        return PREM_KO[i] if i < len(PREM_KO) else ""
     if key == "friendly":
         return "Exhibition"
     return ""
