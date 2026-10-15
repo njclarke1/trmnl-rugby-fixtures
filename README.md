@@ -10,9 +10,8 @@ One codebase serves one stack per team:
 | Bristol Bears | 3459 | `trmnl-bristol-api` | `club_wp` (club website feed) |
 | England | 3460 | `trmnl-england-api` | *later* |
 
-**Status:** Phase 2 (sidecar core) and Phase 3 (broadcast rights map) are done. Still to come:
+**Status:** Phases 2–4 are done: sidecar core, broadcast rights map and crests. Still to come:
 
-- Phase 4: crests.
 - Phase 5: `full.liquid`.
 - Phase 6: hardening.
 
@@ -107,6 +106,31 @@ The four states are `available`, `unavailable`, `tbc` and `none` (confirmed not 
 
 **HBO Max:** it is a separate channel family (`hbomax`). Add it to `OWNED_CHANNELS` if you have TNT through HBO Max; then HBO Max-only games are also counted as yours.
 
+## Crests
+
+Crest URLs come from the club feed's JSON, for both teams. During each upstream refresh, `app/crests.py` turns each crest into a 1-bit **90×68 oval**: the inside of the mock's 96×74 oval, less its 3px border. Each crest is processed once and cached on the volume. The steps are:
+
+1. Composite onto white and convert to greyscale.
+2. Trim to the crest. For a transparent PNG, the alpha channel defines the crest's edges.
+3. Fit to 78% of the oval, then apply UnsharpMask.
+4. Convert to black and white with **Otsu**, a threshold chosen automatically for each crest from its own opaque pixels, measured before sharpening.
+5. Apply the oval mask.
+
+Two variants are produced:
+
+- `crest`: black on white.
+- `crest_inv`: white on black, which is the mock's `.crest.inv` style for your own side.
+
+**Polarity.** A crest is inverted only when it sits on its own opaque dark background, i.e. all four corners of the crest box are black. Even then, only the crest box is inverted. A dark shield on a transparent background is never flipped.
+
+**Pale crests.** Transparent crests get a silhouette outline drawn from their alpha channel, so a white or pale crest still shows its shape on white paper.
+
+**Fallback.** The payload names a crest only once its file exists. Until then, or if fetching it failed, the template shows the 3-letter initials from the mock.
+
+**Checking by eye:** open `http://192.168.68.111:3459/crests` in a browser. It shows each original crest next to both variants at 1× and 3×. If a crest reads badly, list it in `CREST_DITHER` to dither it instead (team names, comma-separated), or set `CREST_THRESHOLD`. The cache key includes the render mode, so changing either re-renders on the next refresh. To re-render everything, bump `PIPELINE_VERSION`.
+
+Club crests are trademarks. The cache is git-ignored, and the tests use synthetic images.
+
 ## Maintenance
 
 | When | What |
@@ -134,6 +158,9 @@ The four states are `available`, `unavailable`, `tbc` and `none` (confirmed not 
 | `OWNED_LABEL` | `Sky / TNT / terrestrial` | wording for "Not in your … package" |
 | `BROADCAST_OVERRIDES` | — | per-fixture JSON, see [Broadcast](#broadcast) |
 | `PREMCUP_POOL_GAMES` | `8` | |
+| `ENABLE_CRESTS` | `1` | |
+| `CREST_DITHER` | — | team names to dither rather than threshold |
+| `CREST_THRESHOLD` | `0` | `0` = Otsu per crest; `1–254` fixed |
 | `PUBLIC_BASE_URL` | `http://192.168.68.111:3459` | crest URLs (Phase 4) |
 | `COMP_LABELS`, `TEAM_DISPLAY`, `TEAM_RAIL` | — | JSON overrides for labels and names |
 
@@ -170,4 +197,5 @@ The tests are stub-driven and use the real Phase 1 responses. They cover:
 - season rollover and an empty season
 - every shape check
 - outage → last good → recovery, including a restart mid-outage
-- all four broadcast states, overrides, rights expiry, and owned-channel filtering.
+- all four broadcast states, overrides, rights expiry, and owned-channel filtering
+- crests: polarity, pale crests, mid-tones, the oval mask, caching, fallback to initials, and route safety.

@@ -100,5 +100,16 @@ ON_DECK_COUNT = int(os.environ.get("ON_DECK_COUNT", "3"))
 CACHE_DIR = os.environ.get("CACHE_DIR", "/app/cache")
 
 # Absolute base for crest URLs in the payload (LaraPaper's renderer must reach
-# it: use the NAS LAN address, not localhost). Crests arrive in Phase 4.
+# it: use the NAS LAN address, not localhost).
 PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "http://192.168.68.111:3459").rstrip("/")
+
+# --- crests (app/crests.py) ---------------------------------------------------
+ENABLE_CRESTS = _bool("ENABLE_CRESTS", "1")
+# Inside of the mock's 96×74 oval less its 3px border.
+CREST_W = int(os.environ.get("CREST_W", "90"))
+CREST_H = int(os.environ.get("CREST_H", "68"))
+# Team names (as in the feed or as displayed) rendered with Floyd–Steinberg
+# dither instead of a hard threshold — for crests with gradients or fine detail.
+CREST_DITHER = _list("CREST_DITHER", "")
+# Fixed threshold 1–254; 0 = Otsu per crest.
+CREST_THRESHOLD = int(os.environ.get("CREST_THRESHOLD", "0"))

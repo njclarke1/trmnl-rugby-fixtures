@@ -6,7 +6,7 @@ only: no arithmetic, no date parsing (LaraPaper's `"now" | date` is unreliable).
 import datetime as dt
 from zoneinfo import ZoneInfo
 
-from . import broadcast, config, rounds
+from . import broadcast, config, crests, rounds
 from .model import Fixture, Team, is_ours
 from .shortnames import badge, display_name, initials, is_long, rail_name
 
@@ -61,9 +61,10 @@ def _team(t: Team, ours: bool) -> dict:
         "long": is_long(t.name),
         "initials": initials(t.name),
         "ours": ours,
-        # Phase 4 serves a processed 1-bit oval at /crest/<key>.png; until then
-        # the template falls back to initials.
-        "crest": None,
+        # Set only once the processed 1-bit oval exists; else the template shows
+        # initials. `crest_inv` is the white-on-black variant (mock `.crest.inv`).
+        "crest": crests.url_for(t.logo, t.name),
+        "crest_inv": crests.url_for(t.logo, t.name, inverted=True),
     }
 
 

@@ -24,6 +24,7 @@ services:
       OWNED_CHANNELS: ${OWNED_CHANNELS:-sky,tnt,bbc,itv,channel4,channel5,s4c}
       OWNED_LABEL: ${OWNED_LABEL:-Sky / TNT / terrestrial}
       BROADCAST_OVERRIDES: ${BROADCAST_OVERRIDES:-}
+      CREST_DITHER: ${CREST_DITHER:-}
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://192.168.68.111:3459}
     volumes:
       # Named volume: survives Portainer redeploys (a ./cache bind mount lives in
