@@ -9,8 +9,14 @@
   shrinking flex child.
 {% endcomment %}
 <style>
+  /* LaraPaper renders this inside its own page (default 8px body margin plus any
+     wrapper padding), which shifted the fixed 960×540 layout right and down off
+     the panel. Zero the page, and pin the layout to the viewport's top-left so
+     no ancestor margin or padding can offset it. */
+  html,body{margin:0 !important;padding:0 !important;overflow:hidden;background:#fff}
   .rg *{box-sizing:border-box;margin:0;padding:0}
-  .rg{width:960px;height:540px;background:#fff;color:#000;display:flex;overflow:hidden;
+  .rg{position:fixed;top:0;left:0;z-index:10;
+    width:960px;height:540px;background:#fff;color:#000;display:flex;overflow:hidden;
     font-family:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;font-kerning:none}
 
   .rg .spine{flex:0 0 70px;width:70px;background:#000;color:#fff;display:flex;align-items:center;
